@@ -1,3 +1,40 @@
+CREATE DATABASE datausuarios;
+
+\c datausuarios; 
+
+CREATE TABLE usuarios (id SERIAL PRIMARY KEY, email VARCHAR(100) NOT NULL, nombre VARCHAR(250) NOT NULL, apellido VARCHAR(250) NOT NULL, rol VARCHAR(20)); 
+
+INSERT INTO usuarios (email, nombre, apellido, rol) VALUES 
+('correo1', 'jose', 'valencia', 'administrador'), 
+('correo2', 'pedro', 'valenzuela', 'usuario'),
+('correo3', 'carlos', 'valdivia', 'usuario'),
+('correo4', 'manuel', 'vargas', 'usuario'),
+('correo5', 'andres', 'valvuena', 'usuario');
+
+
+CREATE TABLE posts (id SERIAL PRIMARY KEY, titulo VARCHAR(200) NOT NULL, contenido TEXT NOT NULL, fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, destacado BOOLEAN, usuario_id BIGINT,  FOREIGN KEY (usuario_id) REFERENCES usuarios(id));
+
+INSERT INTO posts (titulo, contenido, fecha_creacion, fecha_actualizacion, destacado, usuario_id)
+VALUES 
+    ('Mamas y Bebes', 'Contenido del Post 1', '2023-11-18 12:00:00', '2023-11-18 12:00:00', true, 1), 
+    ('Plantas', 'Contenido del Post 2', '2023-11-18 12:30:00', '2023-11-18 12:30:00', true, 1), 
+    ('El planeta', 'Contenido del Post 3', '2023-11-18 13:00:00', '2023-11-18 13:00:00', true, 2), 
+    ('Enfermedades', 'Contenido del Post 4', '2023-11-18 13:30:00', '2023-11-18 13:30:00', false, 2), 
+    ('Tratamientos AV', 'Contenido del Post 5', '2023-11-18 14:00:00', '2023-11-18 14:00:00', false, NULL); 
+
+    CREATE TABLE comentarios (id SERIAL PRIMARY KEY, contenido TEXT NOT NULL, fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP, usuario_id BIGINT, post_id BIGINT, FOREIGN KEY (usuario_id) REFERENCES usuarios(id),FOREIGN KEY (post_id) REFERENCES posts(id));
+
+INSERT INTO comentarios (contenido, fecha_creacion, usuario_id, post_id)
+VALUES 
+    ('Contenido del Comentario 1', '2023-11-18 15:00:00', 1, 1), 
+    ('Contenido del Comentario 2', '2023-11-18 15:15:00', 2, 1), 
+    ('Contenido del Comentario 3', '2023-11-18 15:30:00', 3, 1), 
+    ('Contenido del Comentario 4', '2023-11-18 15:45:00', 1, 2), 
+    ('Contenido del Comentario 5', '2023-11-18 16:00:00', 2, 2); 
+
+
+
+
 1- Cruza los datos de la tabla usuarios y posts, mostrando las siguientes columnas:
 nombre y email del usuario, junto al título y contenido del post.
 
@@ -52,6 +89,8 @@ R= SELECT usuarios.email FROM usuarios JOIN (SELECT usuario_id, COUNT(id) AS can
 ---------
  correo2
 
+ 
+
  5- Muestra la fecha del último post de cada usuario
  Hint: Utiliza la función de agregado MAX sobre la fecha de creación.
 
@@ -70,8 +109,6 @@ R= SELECT posts.titulo, posts.contenido FROM posts JOIN (SELECT post_id, COUNT(i
     titulo     |      contenido
 ---------------+----------------------
  Mamas y bebes | Contenido del Post 1
-
- 
 
 7- Muestra en una tabla el título de cada post, el contenido de cada post y el contenido
 de cada comentario asociado a los posts mostrados, junto con el email del usuario
